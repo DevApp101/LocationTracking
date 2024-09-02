@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Location Tracker</title>
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            alert("Latitude: " + lat + "\nLongitude: " + lon);
+
+            // Optional: Send location data to your server
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "https://your-server.com/save-location", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("latitude=" + lat + "&longitude=" + lon);
+
+            // Alternatively, you can store it in local storage for easy access later
+            localStorage.setItem("favoriteLocation", JSON.stringify({lat: lat, lon: lon}));
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+    </script>
+</head>
+<body onload="getLocation()">
+    <h1>Location Tracker</h1>
+    <p>This page will request your device's location.</p>
+</body>
+</html>
